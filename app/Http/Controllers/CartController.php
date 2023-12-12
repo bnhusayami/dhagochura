@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -47,7 +48,9 @@ class CartController extends Controller
 
     public function Checkout(Request $req)
     {
-    
+
+        if(Auth::check())
+        {
         $store = new Order();
         $store->product_id = $req->product_id;
         $store->client_name = $req->client_name;
@@ -56,13 +59,17 @@ class CartController extends Controller
         $store->address = "kathamndu";
         $store->contact_no = $req->client_no;
         $store->payment_status = 'cash';
-        $store->user_id = auth()->user()->id;
+        $store->user_id = auth()->user()->id ?? null;
         $store->save();
 
         $removeCart = Cart::find($req->cart_id);
         $removeCart->delete();
 
         return redirect('/vieworders');
+        }
+
+        return redirect('/login');
+
     }
 
 }

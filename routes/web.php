@@ -29,10 +29,11 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::get('/admin',[Controller::class, 'admin']);
 
 
-
+Route::group(['prefix'=>'admin','middleware'=>['admin','verified']],function (){
+    Route::get('/',[Controller::class, 'admin']);
+});
 
 Route::get('/viewproduct',[Controller::class, 'index']);
 Route::get('//change/order/status/{id}',[Controller::class, 'changeOrderStatus']);
